@@ -1,10 +1,14 @@
-﻿using CS321_W5D1_ExerciseLogAPI.Core.Services;
+﻿using CS321_W5D1_ExerciseLogAPI.Core.Models;
+using CS321_W5D1_ExerciseLogAPI.Core.Services;
 using CS321_W5D1_ExerciseLogAPI.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace CS321_W5D1_ExerciseLogAPI
 {
@@ -20,7 +24,8 @@ namespace CS321_W5D1_ExerciseLogAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>();
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             // TODO: Prep Part 1: Add Identity services (Part 1 of prep exercise)
 
@@ -31,12 +36,12 @@ namespace CS321_W5D1_ExerciseLogAPI
             services.AddScoped<IActivityTypeRepository, ActivityTypeRepository>();
             services.AddScoped<IActivityTypeService, ActivityTypeService>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc();
         }
 
         // TODO: Class Project: Seed admin user
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -52,7 +57,9 @@ namespace CS321_W5D1_ExerciseLogAPI
 
             // TODO: Prep Part 1: Use authentication 
 
-            app.UseMvc();
+            app.UseHttpsRedirection();
+            app.UseRouting();
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
 
 

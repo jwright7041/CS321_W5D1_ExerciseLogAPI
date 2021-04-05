@@ -11,15 +11,11 @@ namespace CS321_W5D1_ExerciseLogAPI.Infrastructure.Data
         public DbSet<Activity> Activities { get; set; }
         // NOTE that we don't have to define a Users DbSet. It is given to us by IdentityDbContext.
 
-        // This method runs once when the DbContext is first used.
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public AppDbContext(DbContextOptions options) : base(options)
         {
-            optionsBuilder.UseSqlite("Data Source=../CS321_W5D1_ExerciseLogAPI.Infrastructure/ExerciseLog.db");
+            
         }
-
-        // This method runs once when the DbContext is first used.
-        // It's a place where we can customize how EF Core maps our
-        // model to the database. 
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -30,11 +26,10 @@ namespace CS321_W5D1_ExerciseLogAPI.Infrastructure.Data
                 new ActivityType { Id = 3, Name = "Walking", RecordType = RecordType.DurationAndDistance }
             );
 
-            builder.Entity<User>().HasData(
-                new User { Id = "123", FirstName = "John", LastName = "Doe" }
-            );
-
-            // TODO: configure some seed data in the books table
+            // builder.Entity<User>().HasData(
+            //     new User { Id = "123", FirstName = "John", LastName = "Doe" }
+            // );
+            
             builder.Entity<Activity>().HasData(
                 new Activity { Id = 1, UserId = "123", ActivityTypeId = 1, Date = new DateTime(2019, 6, 19), Distance = 3, Duration = 30, Notes = "Hot!!!!" }
             );
